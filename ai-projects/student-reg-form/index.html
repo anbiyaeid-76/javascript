@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Registration System</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#1d3557,#457b9d,#a8dadc);
+    min-height:100vh;
+    padding:30px;
+}
+
+.container{
+    width:95%;
+    max-width:1200px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    color:white;
+    margin-bottom:25px;
+}
+
+.card{
+    background:white;
+    border-radius:10px;
+    padding:25px;
+    box-shadow:0 10px 20px rgba(0,0,0,.2);
+}
+
+form{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:15px;
+}
+
+.input-group{
+    display:flex;
+    flex-direction:column;
+}
+
+label{
+    margin-bottom:5px;
+    font-weight:bold;
+}
+
+input,select{
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    outline:none;
+    font-size:15px;
+}
+
+input:focus,select:focus{
+    border:1px solid #1d3557;
+}
+
+.buttons{
+    grid-column:1/-1;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    color:white;
+    font-size:16px;
+}
+
+.add{
+    background:#2a9d8f;
+}
+
+.update{
+    background:#f4a261;
+}
+
+.clear{
+    background:#6c757d;
+}
+
+.delete{
+    background:#e63946;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+.error{
+    color:red;
+    font-size:13px;
+    margin-top:3px;
+}
+
+.search-box{
+    margin:20px 0;
+}
+
+.search-box input{
+    width:100%;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+table th{
+    background:#1d3557;
+    color:white;
+    padding:12px;
+}
+
+table td{
+    padding:10px;
+    text-align:center;
+}
+
+table tr:nth-child(even){
+    background:#f2f2f2;
+}
+
+.action-btn{
+    padding:8px 12px;
+    border:none;
+    color:white;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.edit{
+    background:#ff9800;
+}
+
+.remove{
+    background:#e63946;
+}
+
+@media(max-width:768px){
+
+table{
+display:block;
+overflow-x:auto;
+}
+
+.buttons{
+flex-direction:column;
+}
+
+button{
+width:100%;
+}
+
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>🎓 Student Registration System</h1>
+
+<div class="card">
+
+<form id="studentForm">
+
+<div class="input-group">
+<label>Full Name</label>
+<input type="text" id="name">
+<small class="error" id="nameError"></small>
+</div>
+
+<div class="input-group">
+<label>Email</label>
+<input type="email" id="email">
+<small class="error" id="emailError"></small>
+</div>
+
+<div class="input-group">
+<label>Phone</label>
+<input type="text" id="phone">
+<small class="error" id="phoneError"></small>
+</div>
+
+<div class="input-group">
+<label>Age</label>
+<input type="number" id="age">
+<small class="error" id="ageError"></small>
+</div>
+
+<div class="input-group">
+<label>Gender</label>
+
+<select id="gender">
+<option value="">Choose</option>
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<small class="error" id="genderError"></small>
+
+</div>
+
+<div class="input-group">
+<label>Course</label>
+
+<select id="course">
+<option value="">Choose</option>
+<option>Computer Science</option>
+<option>Information Technology</option>
+<option>Networking</option>
+<option>Software Engineering</option>
+<option>Business</option>
+</select>
+
+<small class="error" id="courseError"></small>
+
+</div>
+
+<div class="buttons">
+
+<button type="button" class="add" onclick="addStudent()">Add Student</button>
+
+<button type="button" class="update" onclick="updateStudent()">Update Student</button>
+
+<button type="reset" class="clear" onclick="clearForm()">Clear</button>
+
+</div>
+
+</form>
+
+</div>
+
+<div class="search-box">
+
+<input
+type="text"
+placeholder="Search Student..."
+id="search"
+onkeyup="searchStudent()">
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Age</th>
+<th>Gender</th>
+<th>Course</th>
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tableBody">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+let students=[];
+let editIndex=-1;
+
+function validate(){
+
+let valid=true;
+
+document.querySelectorAll(".error").forEach(e=>e.innerHTML="");
+
+let name=document.getElementById("name").value.trim();
+let email=document.getElementById("email").value.trim();
+let phone=document.getElementById("phone").value.trim();
+let age=document.getElementById("age").value.trim();
+let gender=document.getElementById("gender").value;
+let course=document.getElementById("course").value;
+
+if(name.length<3){
+document.getElementById("nameError").innerHTML="Enter at least 3 characters";
+valid=false;
+}
+
+let emailPattern=/^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+
+if(!email.match(emailPattern)){
+document.getElementById("emailError").innerHTML="Invalid email";
+valid=false;
+}
+
+let phonePattern=/^[0-9]{10}$/;
+
+if(!phone.match(phonePattern)){
+document.getElementById("phoneError").innerHTML="Phone must contain 10 digits";
+valid=false;
+}
+
+if(age<15 || age>60){
+document.getElementById("ageError").innerHTML="Age must be between 15 and 60";
+valid=false;
+}
+
+if(gender==""){
+document.getElementById("genderError").innerHTML="Select gender";
+valid=false;
+}
+
+if(course==""){
+document.getElementById("courseError").innerHTML="Select course";
+valid=false;
+}
+
+return valid;
+
+}
+
+function addStudent(){
+
+if(!validate()) return;
+
+let student={
+
+id:"ST"+(students.length+1).toString().padStart(3,"0"),
+
+name:name.value,
+
+email:email.value,
+
+phone:phone.value,
+
+age:age.value,
+
+gender:gender.value,
+
+course:course.value
+
+};
+
+students.push(student);
+
+displayStudents();
+
+clearForm();
+
+}
+
+function displayStudents(){
+
+let data="";
+
+students.forEach((student,index)=>{
+
+data+=`
+
+<tr>
+
+<td>${student.id}</td>
+
+<td>${student.name}</td>
+
+<td>${student.email}</td>
+
+<td>${student.phone}</td>
+
+<td>${student.age}</td>
+
+<td>${student.gender}</td>
+
+<td>${student.course}</td>
+
+<td>
+
+<button class="action-btn edit" onclick="editStudent(${index})">Edit</button>
+
+<button class="action-btn remove" onclick="deleteStudent(${index})">Delete</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+tableBody.innerHTML=data;
+
+}
+
+function editStudent(index){
+
+editIndex=index;
+
+let s=students[index];
+
+name.value=s.name;
+email.value=s.email;
+phone.value=s.phone;
+age.value=s.age;
+gender.value=s.gender;
+course.value=s.course;
+
+}
+
+function updateStudent(){
+
+if(editIndex==-1){
+
+alert("Select a student to edit.");
+
+return;
+
+}
+
+if(!validate()) return;
+
+students[editIndex].name=name.value;
+students[editIndex].email=email.value;
+students[editIndex].phone=phone.value;
+students[editIndex].age=age.value;
+students[editIndex].gender=gender.value;
+students[editIndex].course=course.value;
+
+displayStudents();
+
+clearForm();
+
+editIndex=-1;
+
+}
+
+function deleteStudent(index){
+
+if(confirm("Delete this student?")){
+
+students.splice(index,1);
+
+displayStudents();
+
+}
+
+}
+
+function clearForm(){
+
+document.getElementById("studentForm").reset();
+
+document.querySelectorAll(".error").forEach(e=>e.innerHTML="");
+
+}
+
+function searchStudent(){
+
+let filter=document.getElementById("search").value.toLowerCase();
+
+let rows=document.querySelectorAll("#tableBody tr");
+
+rows.forEach(row=>{
+
+let text=row.innerText.toLowerCase();
+
+row.style.display=text.includes(filter)?"":"none";
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
