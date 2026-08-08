@@ -11,3 +11,8 @@ console.log("Moscow");
 console.log("Rio de jeneiro");
 console.log("Cape town");
 console.log("Toronto");
+
+
+
+
+

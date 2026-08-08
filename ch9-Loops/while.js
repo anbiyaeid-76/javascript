@@ -2,9 +2,9 @@ console.log("London");
 console.log("Paris");
 console.log("Tokyo");
 let counter = 0;
-while( counter < 3 ) {
- console.log("New york")
- counter ++
+while (counter < 3) {
+  console.log("New york");
+  counter ++
 }
 
 console.log("Sydney");

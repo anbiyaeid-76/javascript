@@ -1,0 +1,3 @@
+ function replyToTheSalam(){
+            alert("Wacalaykumasalam");
+        }
