@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript Modules</title>
+</head>
+
+<body>
+
+    <h1>JavaScript Modules</h1>
+
+    <div id="result"></div>
+
+    <script type="module">
+
+        import { multiply, subtract, divide } from "./math.js";
+
+        let a = 10;
+        let b = 5;
+
+        document.getElementById("result").innerHTML = `
+            <p>${a} × ${b} = ${multiply(a, b)}</p>
+            <p>${a} - ${b} = ${subtract(a, b)}</p>
+            <p>${a} ÷ ${b} = ${divide(a, b)}</p>
+        `;
+
+    </script>
+
+</body>
+</html>
