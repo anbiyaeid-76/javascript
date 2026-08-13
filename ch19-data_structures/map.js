@@ -1,7 +1,10 @@
-let students = new Map();
+let sales = new Map([
+    ["January", 1200],
+    ["February", 1500],
+    ["March", 1800],
+    ["April", 1300],
+    ["May", 2100],
+    ["June", 2500]
+]);
 
-students.set("student1", "Ali");
-students.set("student2", "Fatima");
-students.set("student3", "Hassan");
-
-console.log(students);
+console.log(sales);
